@@ -42,7 +42,13 @@ Step 5] Apply Hough Transform to detect lines in the Region of interest
 
 ![alt text][image5]
 
-In order to draw a single line on the left and right lanes, I modified the draw_lines() function by ...
+In order to draw a single line on the left and right lanes, I modified draw_lines() function as follows. 
+
+1] Filtering: I take line segment with longest length and call it as "best guess" for real lane boundary. I then filter out line segments whose slopes are too far apart from this "best guess" line segment
+
+2] Averaging: I do weighted average of slopes and intercept of all line segments remaining after filtering. The weights are line segment lengths
+
+3] Extrapolating: I find intersection of final line segment, parameterized by average slope and average intercept, with my region of interest to find complete lane lines 
 
 ###2. Potential shortcomings
 
@@ -50,12 +56,16 @@ This algorithm relies heavily on edge detection to find edge pixels and assumes 
 
 The parameters used for region of interest may not work for other cameras with different resolution as lane markings may be clipped or adjacent lanes may be included as well depending on lens model in the camera.
 
+In order to compute complete lines from line segments detected by Hough transform, I do filtering/averaging/extrapolating of line slopes. This method is prone to noise and can give bad results if lane markings are not detected correctly at all in the image. There is also some jitter as each frame is processed independantly
+
 One limitation to current approach is it can only find straight lines, in cases where road curves, lane markings will be curve and not a straight line so this algorithm will fail to detect such lane boundaries
 
 
 ###3. Possible improvements
 
 A possible improvement would be to use different color space like HSV to detect edges on images where there doesn't seem enoguh contrast in RGB images. One can also build state machine which will predict location of next lane marking and use it to improve edge detection in extreme conditions where lane markings are not easily visible. 
+
+In order to reduce jitter in the final image, one can apply smoothing filter. Using better outlier removal methods like RANSAC would improve results too. Finally, using Kalman filter or something similar will help improve extreme cases where algorithm might fail to detect lane markings at all.
 
 One more improvement would be to support curved roads. This can be done by changing Hough transform to detect lines and circular curves.
 
