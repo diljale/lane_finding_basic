@@ -42,7 +42,7 @@ Step 5] Apply Hough Transform to detect lines in the Region of interest
 
 ![alt text][image5]
 
-In order to draw a single line on the left and right lanes, I modified draw_lines() function as follows. 
+Step 6] In order to draw a single line on the left and right lanes, I modified draw_lines() function as follows. 
 
 1] Filtering: I take line segment with longest length and call it as "best guess" for real lane boundary. I then filter out line segments whose slopes are too far apart from this "best guess" line segment
 
